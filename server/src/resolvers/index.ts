@@ -1,4 +1,4 @@
-import UserResolver from "./user.resolver";
-import ProductResolver from "./product.resolver";
+import { UrlResolver } from "./urlResolver.resolver";
 
-export const resolvers = [UserResolver, ProductResolver] as const;
+
+export const resolvers = [UrlResolver] as const;
