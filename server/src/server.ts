@@ -17,8 +17,6 @@ app.use(
   })
 );
 
-
-
 app.listen(port, () => {
   console.log(`Server started successfully on port : ${port}`);
 });
