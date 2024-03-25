@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import DbConnection from "./config/mongo";
-
+import  urlShortner from "./routes/urlRoutes";
 dotenv.config();
 
 DbConnection()
@@ -18,6 +18,10 @@ app.use(
     credentials: true,
   })
 );
+
+app.use("/api/", urlShortner);
+
+
 
 app.listen(port, () => {
   console.log(`Server started successfully on port : ${port}`);
