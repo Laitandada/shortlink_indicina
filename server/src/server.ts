@@ -1,9 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import DbConnection from "./config/mongo";
 
 dotenv.config();
 
+DbConnection()
 
 const port = process.env.PORT || 5001;
 
