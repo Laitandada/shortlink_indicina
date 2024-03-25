@@ -13,8 +13,10 @@
     "config": "^3.3.11",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
-    "graphql": "^16.8.1",
+    "graphql": "^15.x",
+    "graphql-upload": "^16.0.2",
     "mongoose": "^8.2.3",
+    "node-modules": "^1.0.1",
     "reflect-metadata": "^0.2.1",
     "type-graphql": "^1.1.1",
     "typescript": "^5.4.3"
