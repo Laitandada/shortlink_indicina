@@ -9,38 +9,38 @@ export const encodeUrl = async (
   req: express.Request,
   res: express.Response
 ) => {
-    try {
-        const { decodedUrl, expirationMinutes, password } = req.body;
-        const urlFound = await urlModel.find({ decodedUrl });
-        if (urlFound.length > 0) {
-          res
-            .status(409)
-            .send({ message: "URL already encoded", foundUrl: urlFound });
-        } else {
-          let expirationDate: Date | undefined;
-          if (expirationMinutes) {
-            expirationDate = addMinutes(new Date(), expirationMinutes);
-          }
-    
-          const encodedUrlData: any = { decodedUrl };
-          if (expirationDate) {
-            encodedUrlData.expirationDate = expirationDate;
-          }
-          if (password) {
-            // Hash the password using bcrypt
-            const hashedPassword = await bcrypt.hash(password, 10);
-            encodedUrlData.passwordLock = hashedPassword;
-          }
-    
-          const encodedUrl = await urlModel.create(encodedUrlData);
-          res
-            .status(201)
-            .send({ message: "URL encoded successfully", encodedUrl: encodedUrl });
-        }
-      } catch (error) {
-        res.status(500).send({ message: "Something went wrong!" });
+  try {
+    const { decodedUrl, expirationMinutes, password } = req.body;
+    const urlFound = await urlModel.find({ decodedUrl });
+    if (urlFound.length > 0) {
+      res
+        .status(409)
+        .send({ message: "URL already encoded", foundUrl: urlFound });
+    } else {
+      let expirationDate: Date | undefined;
+      if (expirationMinutes) {
+        expirationDate = addMinutes(new Date(), expirationMinutes);
       }
-    };
+
+      const encodedUrlData: any = { decodedUrl };
+      if (expirationDate) {
+        encodedUrlData.expirationDate = expirationDate;
+      }
+      if (password) {
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10);
+        encodedUrlData.passwordLock = hashedPassword;
+      }
+
+      const encodedUrl = await urlModel.create(encodedUrlData);
+      res
+        .status(201)
+        .send({ message: "URL encoded successfully", encodedUrl: encodedUrl });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Something went wrong!" });
+  }
+};
 
 // logic for decoding url
 export const decodeUrl = async (
@@ -80,12 +80,10 @@ export const decodeUrl = async (
     }
 
     const decodedUrlValue = decodedUrl.decodedUrl;
-    res
-      .status(200)
-      .send({
-        message: "URL decoded successfully",
-        decodedUrl: decodedUrlValue,
-      });
+    res.status(200).send({
+      message: "URL decoded successfully",
+      decodedUrl: decodedUrlValue,
+    });
   } catch (error) {
     res.status(500).send({ message: "Something went wrong!" });
   }
@@ -103,12 +101,10 @@ export const getUrlStats = async (
     if (!shortUrlStats) {
       res.status(404).send({ message: "Url not found!" });
     } else {
-      res
-        .status(200)
-        .send({
-          message: "URL found successfully",
-          shortUrlStats: shortUrlStats,
-        });
+      res.status(200).send({
+        message: "URL found successfully",
+        shortUrlStats: shortUrlStats,
+      });
     }
   } catch (error) {
     res.status(500).send({ message: "Something went wrong!" });
@@ -124,12 +120,10 @@ export const getAllEncodedUrls = async (
     if (allEncodedUrls.length < 0) {
       res.status(404).send({ message: "EncodedUrls not found!" });
     } else {
-      res
-        .status(200)
-        .send({
-          message: "All EncodedUrls found successfully",
-          allEncodedUrls: allEncodedUrls,
-        });
+      res.status(200).send({
+        message: "All EncodedUrls found successfully",
+        allEncodedUrls: allEncodedUrls,
+      });
     }
   } catch (error) {
     res.status(500).send({ message: "Something went wrong!" });
@@ -147,17 +141,21 @@ export const goToEncodedUrlLink = async (
     if (!encodedUrl) {
       res.status(404).send({ message: "Orginal url not found!" });
       return;
-    } 
+    }
 
-    
-      // Increase the collection stats by 1
-      encodedUrl.stats++;
-  
-      // Update the collection stats
-      await encodedUrl.save();
-  
-      // Redirect to the decoded URL
-      res.redirect(encodedUrl.decodedUrl);
+    // Check if the URL has expired
+    if (encodedUrl.expirationDate && encodedUrl.expirationDate < Date.now()) {
+      res.status(400).send({ message: "Url link has expired" });
+      return;
+    }
+    // Increase the collection stats by 1
+    encodedUrl.stats++;
+
+    // Update the collection stats
+    await encodedUrl.save();
+
+    // Redirect to the decoded URL
+    res.redirect(encodedUrl.decodedUrl);
   } catch (error) {
     res.status(500).send({ message: "Something went wrong!" });
   }
