@@ -1,21 +1,37 @@
 import express from "express";
 import { urlModel } from "../models/urlSchema";
-
+import bcrypt from 'bcrypt';
+import { addHours } from 'date-fns';
 // logic for encodiq url
+ // Importing from 'date-fns' library for date manipulation
+
 export const encodeUrl = async (
   req: express.Request,
   res: express.Response
 ) => {
   try {
-  //get the url from the resonse
-    const { decodedUrl } = req.body;
+    const { decodedUrl, expirationHours, password } = req.body; 
     const urlFound = await urlModel.find({ decodedUrl });
     if (urlFound.length > 0) {
-      res.status(409);
-      res.send({ message: "Url already encoded", foundUrl: urlFound });
+      res.status(409).send({ message: "URL already encoded", foundUrl: urlFound });
     } else {
-      const encodedUrl = await urlModel.create({ decodedUrl });
-      res.status(201).send({ message: "Url encoded successfully", encodedUrl: encodedUrl });
+      let expirationDate: Date | undefined;
+      if (expirationHours) {
+        expirationDate = addHours(new Date(), expirationHours); 
+      }
+
+      const encodedUrlData: any = { decodedUrl };
+      if (expirationDate) {
+        encodedUrlData.expirationDate = expirationDate; 
+      }
+      if (password) {
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10); 
+        encodedUrlData.passwordLock = hashedPassword; 
+      }
+
+      const encodedUrl = await urlModel.create(encodedUrlData);
+      res.status(201).send({ message: "URL encoded successfully", encodedUrl: encodedUrl });
     }
   } catch (error) {
     res.status(500).send({ message: "Something went wrong!" });
@@ -28,13 +44,15 @@ export const decodeUrl = async (
     res: express.Response
   ) => {
     try {
-      const { encodedUrl } = req.body;
+      const { encodedUrl,password } = req.body;
       console.log(encodedUrl);
       const decodedUrl = await urlModel.findOne({ encodedUrl: encodedUrl });
       if (!decodedUrl) {
         res.status(404).send({ message: "Encoded URL not found" });
       } else {
-       
+        if (password) {
+            
+        }
         const decodedUrlValue = decodedUrl.decodedUrl;
         res.status(200).send({ message: "URL decoded successfully", decodedUrl: decodedUrlValue });
       }

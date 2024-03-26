@@ -12,10 +12,20 @@ const urlSchemaModel = new mongoose.Schema(
       required: true,
       default: () => nanoid().substring(0, 10),
     },
+    passwordLock: {
+      type: String,
+      required: false,
+   
+    },
     stats: {
       type: Number,
       default: 0,
     },
+    expirationDate: {
+      type: Number,
+   required: false,
+    },
+
     createdAt: {
       type: Date,
       default: Date.now,
