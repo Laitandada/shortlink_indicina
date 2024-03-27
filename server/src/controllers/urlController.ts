@@ -160,3 +160,20 @@ export const goToEncodedUrlLink = async (
     res.status(500).send({ message: "Something went wrong!" });
   }
 };
+export const deleteEncodedUrl = async (
+    req: express.Request,
+    res: express.Response
+  ) => {
+    try {
+        console.log(req.params.id)
+      const deleteUrl = await urlModel.findByIdAndDelete({  _id: req.params.id, });
+      console.log(deleteUrl);
+      if (deleteUrl) {
+        res.status(200).send({ message: "Encoded URL succesfully deleted!" });
+      }else {
+        res.status(404).send({ message: "Encoded URL not found" });
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Something went wrong!" });
+    }
+  };

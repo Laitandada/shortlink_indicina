@@ -125,11 +125,13 @@ Sure, here's a detailed description of each API endpoint:
     500: Something went wrong on the server.
 
     Endpoint Url: http://localhost:5000/api/allUrls
-    
+
 
 5.  GET /encodedUrl/:encodedUrl
 
     Description: This endpoint redirects to the original URL corresponding to the provided encoded URL.
+
+
     URL Parameters:
     encodedUrl (string): The encoded URL to which redirection is requested.
 
@@ -139,3 +141,19 @@ Sure, here's a detailed description of each API endpoint:
     500: Something went wrong on the server.
 
     Endpoint Url: http://localhost:5000/api/encodedUrl/"encodedUrl"
+
+
+6.  POST /deleteUrl/:id
+
+    Description: This endpoint deletes the particular id of the encoded url sent through the request.
+
+
+    URL Parameters:
+    id (string): The id of  encoded URL to be deleted.
+
+    Response Status Codes:
+    200: Deletes the particular encode URL.
+    404: URL to be deleted not found.
+    500: Something went wrong on the server.
+
+    Endpoint Url: http://localhost:5000/api/deleteUrl/"id"

@@ -20,8 +20,9 @@ import {
   FormControlLabel,
   Checkbox
 } from "@mui/material";
+import { red } from '@mui/material/colors';
 import { enqueueSnackbar } from "notistack";
-import { Container, OverallContainer } from "./styled";
+import { Container, OverallContainer, ResultContainer } from "./styled";
 const Homepage = () => {
     const [tabValue, setTabValue] = useState(0);
     const [encodedUrl, setEncodedUrl] = useState('');
@@ -71,9 +72,9 @@ const Homepage = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            decodedUrl: encodedUrl,
-            expirationMinutes: showExpirationDate ? expirationDate : undefined,
-            password: showPassword ? password : undefined,
+            decodedUrl: encodedUrl.trim(),
+            expirationMinutes: showExpirationDate ? expirationDate.trim() : undefined,
+            password: showPassword ? password.trim() : undefined,
           }),
         });
        
@@ -104,8 +105,8 @@ const Homepage = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            encodedUrl: decodedUrl,
-            password: password,
+            encodedUrl: decodedUrl.trim(),
+            password: password.trim(),
           }),
         });
    
@@ -153,6 +154,24 @@ const Homepage = () => {
             variant: "success",
           });
       };
+
+      const handelDeleteUrl = async () => {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/deleteUrl/${selectedUrl._id}`, {
+            method: 'DELETE',
+          });
+      
+          const data = await response.json();
+          enqueueSnackbar(`${data.message}`, {
+            variant: "success",
+          });
+          handleDialogClose()
+        } catch (error) {
+          console.error('Error deleting URL:', error);
+        }
+      };
+      
+      
   
     return (
       <OverallContainer>
@@ -217,6 +236,7 @@ const Homepage = () => {
               onChange={(event) => setDecodedUrl(event.target.value)}
               fullWidth
               required
+              sx={{mb:3}}
             />
             {showPasswordInput && (
               <TextField
@@ -225,6 +245,7 @@ const Homepage = () => {
                 onChange={(event) => setPassword(event.target.value)}
                 fullWidth
                 required
+                sx={{mb:3}}
               />
             )}
             <Button type="submit" variant="contained" color="primary">
@@ -234,10 +255,11 @@ const Homepage = () => {
         )}
         
 
-                <Box>
+                <Box  sx={{display:"flex",justifyContent:"center",alignItems:"center"}}>
                     <Typography variant="h5" sx={{textAlign:"center"}}>
-                    {encodedUrlResult && tabValue === 0 ? `${process.env.REACT_APP_SERVER_URL}/${encodedUrlResult}` : null}
-                    {decodedUrlResult && tabValue === 1 ? decodedUrlResult : null}
+                        
+                    {encodedUrlResult && tabValue === 0 ? <ResultContainer>{process.env.REACT_APP_SERVER_URL}/{encodedUrlResult} </ResultContainer>: null}
+                    {decodedUrlResult && tabValue === 1 ? <ResultContainer>{decodedUrlResult}</ResultContainer>  : null}
 
                     </Typography>
                 </Box>
@@ -280,6 +302,9 @@ const Homepage = () => {
           <DialogActions>
             <Button onClick={handleCopyUrl} color="primary">
            Copy
+            </Button>
+            <Button onClick={handelDeleteUrl} color="error">
+           Delete
             </Button>
             <Button onClick={handleDialogClose} color="primary">
               Close
