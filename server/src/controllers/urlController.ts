@@ -111,6 +111,7 @@ export const getUrlStats = async (
   }
 };
 
+// logic for getting all of the urls
 export const getAllEncodedUrls = async (
   req: express.Request,
   res: express.Response
@@ -130,6 +131,7 @@ export const getAllEncodedUrls = async (
   }
 };
 
+// logic to navigate to the url link
 export const goToEncodedUrlLink = async (
   req: express.Request,
   res: express.Response
@@ -160,12 +162,14 @@ export const goToEncodedUrlLink = async (
     res.status(500).send({ message: "Something went wrong!" });
   }
 };
+
+// logic to delete the encoded url
 export const deleteEncodedUrl = async (
     req: express.Request,
     res: express.Response
   ) => {
     try {
-        console.log(req.params.id)
+     
       const deleteUrl = await urlModel.findByIdAndDelete({  _id: req.params.id, });
       console.log(deleteUrl);
       if (deleteUrl) {
