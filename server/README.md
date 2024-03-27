@@ -22,6 +22,9 @@ Installation steps on local machine:
     Note:
     Remember to close all running servers before starting the backend server , close server with ctrl+c.
 
+
+
+
 ================================= Detailed Description for API Endpoints For Testing =====================================
 
 Sure, here's a detailed description of each API endpoint:
@@ -111,6 +114,7 @@ Sure, here's a detailed description of each API endpoint:
 
     Endpoint Url: http://localhost:5000/api/statistic/"encodedUrl"
 
+
 4.  GET /allUrls
 
     Description: This endpoint retrieves all encoded URLs along with their statistics.
@@ -121,6 +125,7 @@ Sure, here's a detailed description of each API endpoint:
     500: Something went wrong on the server.
 
     Endpoint Url: http://localhost:5000/api/allUrls
+    
 
 5.  GET /encodedUrl/:encodedUrl
 
