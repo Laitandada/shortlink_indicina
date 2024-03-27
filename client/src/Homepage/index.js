@@ -195,6 +195,8 @@ const Homepage = () => {
           <Tab label="Decode Url" />
         </Tabs>
 
+        {/* Encode Tab */}
+
         {tabValue === 0 && (
           <form onSubmit={handleEncodeSubmit}>
             <TextField
@@ -252,6 +254,8 @@ const Homepage = () => {
           </form>
         )}
 
+        {/* Decode Tab */}
+        
         {tabValue === 1 && (
           <form onSubmit={handleDecodeSubmit}>
             <TextField
@@ -278,6 +282,7 @@ const Homepage = () => {
           </form>
         )}
 
+        {/* Result of submission */}
         <Box
           sx={{
             display: "flex",
@@ -297,6 +302,7 @@ const Homepage = () => {
           </Typography>
         </Box>
 
+        {/* Table */}
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
             <TableHead>
@@ -321,6 +327,8 @@ const Homepage = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Dialog  */}
         <Dialog open={dialogOpen} onClose={handleDialogClose}>
           <DialogTitle>URL Details</DialogTitle>
           <DialogContent>
